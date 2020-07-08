@@ -4,6 +4,7 @@ using Grand.Services.Media;
 using Grand.Web.Features.Models.ShoppingCart;
 using MediatR;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,19 +104,34 @@ namespace Grand.Web.Features.Handlers.ShoppingCart
                         break;
                     case AttributeControlType.Datepicker:
                         {
-                            var day = request.Form[controlId + "_day"];
-                            var month = request.Form[controlId + "_month"];
-                            var year = request.Form[controlId + "_year"];
-                            DateTime? selectedDate = null;
-                            try
-                            {
-                                selectedDate = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
-                            }
-                            catch { }
-                            if (selectedDate.HasValue)
+                            //var day = request.Form[controlId + "_day"];
+                            //var month = request.Form[controlId + "_month"];
+                            //var year = request.Form[controlId + "_year"];
+                            //DateTime? selectedDate = null;
+                            //try
+                            //{
+                            //    selectedDate = new DateTime(Int32.Parse(year), Int32.Parse(month), Int32.Parse(day));
+                            //}
+                            //catch { }
+                            //if (selectedDate.HasValue)
+                            //{
+                            //    attributesXml = _productAttributeParser.AddProductAttribute(attributesXml,
+                            //        attribute, selectedDate.Value.ToString("D"));
+                            //}
+                            //DateTime dateValue;
+                            var date = Convert.ToString(request.Form[controlId]);
+                            
+                            DateTime dateValue;
+                            if (DateTime.TryParseExact(date,"d/M/yyyy",
+                                                        CultureInfo.InvariantCulture,
+                                                        DateTimeStyles.None,
+                                out dateValue))
                             {
                                 attributesXml = _productAttributeParser.AddProductAttribute(attributesXml,
-                                    attribute, selectedDate.Value.ToString("D"));
+                                   attribute, dateValue.ToString("D"));
+                            }
+                            else
+                            {
                             }
                         }
                         break;
